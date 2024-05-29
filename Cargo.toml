@@ -1,0 +1,45 @@
+[package]
+name = "dasrust"
+version = "0.1.4"
+edition = "2021"
+
+#[env]
+#RUSTFLAGS="-C target-cpu=native"
+#MACOSX_DEPLOYMENT_TARGET=14.0
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+strip = true
+codegen-units = 1
+#debug = true
+#panic = "abort"
+
+#[[bin]]
+#name = "dasrust"
+
+[lib]
+name = "dasrust"
+crate-type = ["cdylib"]
+
+[target.'cfg(target_os = "macos")'.dependencies]
+pyo3 = { version = "0.21", features = ["extension-module"] }
+ndarray-linalg = { version = "0.16", default-features = false }
+blas-src = { version = "0.10", features = ["accelerate"] }
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+pyo3 = { version = "0.21" }
+ndarray-linalg = { version = "0.16", features = [
+    "openblas",
+] } #"openblas-system"
+blas-src = { version = "0.10", default-features = false, features = [
+    "openblas",
+] }
+
+[dependencies]
+numpy = "0.21"
+ndarray = { version = "0.15", features = ["blas", "rayon"] }
+ndarray-rand = "0.14"
+num-complex = "0.4"
+ndrustfft = "0.4"
+num-traits = "0.2"
